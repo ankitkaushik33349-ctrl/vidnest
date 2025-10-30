@@ -37,27 +37,12 @@
     const episode = params.get('episode');
     const startat = params.get('progress');
 
-    // ✅ Correct fixed parameters
-    const fixed = new URLSearchParams({
-      theme: '#e64460',
-      sub: 'en',
-      autoplay: 'true',
-      nextbutton: 'false',
-      prevepisode: 'hide',
-      nextepisode: 'hide',
-      bottomsettings: 'off'
-    });
-
-    if (startat) fixed.set('progress', startat);
-
     // ✅ Build correct URL
     let url = '';
     if (type === 'movie') {
-      url = `${base}/movie/${id}?${fixed.toString()}`;
-    } else if (type === 'tv') {
-      url = `${base}/tv/${id}/${season}/${episode}?${fixed.toString()}`;
+      url = `${base}/movie/${id}?autoplay=true&server=Sigma&progress=${startat}`;
     } else {
-      url = `${base}?${fixed.toString()}`;
+      url = `${base}/tv/${id}/${season}/${episode}?autoplay=true&server=Sigma&prevepisode=false&nextepisode=false&progress=${startat}`;
     }
 
     iframe.src = url;
