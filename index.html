@@ -1,74 +1,74 @@
-<!DOCTYPE html>
-<html lang="en">
+  <!DOCTYPE html>
+  <html lang="en">
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>Player</title>
-  <style>
-    html,
-    body {
-      margin: 0;
-      height: 100%;
-      background: #000;
-    }
-
-    iframe {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
-    }
-  </style>
-</head>
-
-<body>
-  <iframe id="player" frameborder="0" allowfullscreen sandbox="allow-scripts allow-same-origin"></iframe>
-
-  <script>
-    const iframe = document.getElementById('player');
-    const base = 'https://vidnest.fun';
-    const params = new URLSearchParams(window.location.search);
-
-    const type = params.get('type');   // movie | tv
-    const id = params.get('id');
-    const season = params.get('season');
-    const episode = params.get('episode');
-    const startat = params.get('progress');
-
-    // ✅ Build correct URL
-    let url = '';
-    if (type === 'movie') {
-      url = `${base}/movie/${id}?autoplay=true&server=Sigma&progress=${startat}`;
-    } else {
-      url = `${base}/tv/${id}/${season}/${episode}?autoplay=true&server=Sigma&prevepisode=false&nextepisode=false&progress=${startat}`;
-    }
-
-    iframe.src = url;
-
-    // 🧱 Block popups
-    const blockPopups = () => {
-      try {
-        const win = iframe.contentWindow;
-        if (win) {
-          win.open = () => null;
-          win.alert = () => null;
-          win.confirm = () => null;
-        }
-      } catch (e) { }
-    };
-    iframe.addEventListener('load', blockPopups);
-    window.open = () => null;
-
-    // 🔁 Forward Vidnest player messages to parent
-    window.addEventListener('message', (event) => {
-      if (!event.origin.includes('vidnest.fun')) return;
-      if (window.parent !== window) {
-        window.parent.postMessage(event.data, '*');
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Player</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #000;
       }
-    });
-  </script>
-</body>
 
-</html>
+      iframe {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <iframe id="player" frameborder="0" allowfullscreen sandbox="allow-scripts allow-same-origin"></iframe>
+
+    <script>
+      const iframe = document.getElementById('player');
+      const base = 'https://vidnest.fun';
+      const params = new URLSearchParams(window.location.search);
+
+      const type = params.get('type');   // movie | tv
+      const id = params.get('id');
+      const season = params.get('season');
+      const episode = params.get('episode');
+      const startat = params.get('progress');
+
+      // ✅ Build correct URL
+      let url = '';
+      if (type === 'movie') {
+        url = `${base}/movie/${id}?autoplay=true&progress=${startat}`;
+      } else {
+        url = `${base}/tv/${id}/${season}/${episode}?autoplay=true&prevepisode=false&nextepisode=false&progress=${startat}`;
+      }
+
+      iframe.src = url;
+
+      // 🧱 Block popups
+      const blockPopups = () => {
+        try {
+          const win = iframe.contentWindow;
+          if (win) {
+            win.open = () => null;
+            win.alert = () => null;
+            win.confirm = () => null;
+          }
+        } catch (e) { }
+      };
+      iframe.addEventListener('load', blockPopups);
+      window.open = () => null;
+
+      // 🔁 Forward Vidnest player messages to parent
+      window.addEventListener('message', (event) => {
+        if (!event.origin.includes('vidnest.fun')) return;
+        if (window.parent !== window) {
+          window.parent.postMessage(event.data, '*');
+        }
+      });
+    </script>
+  </body>
+
+  </html>
